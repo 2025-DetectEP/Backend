@@ -1,7 +1,8 @@
 package com.olive.pribee.global.common;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
+
+import lombok.Getter;
 
 @Getter
 public class DataResponseDto<T> extends ResponseDto {

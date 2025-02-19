@@ -1,11 +1,7 @@
 package com.olive.pribee.global.error.handler;
 
-import com.olive.pribee.global.common.ResponseDto;
-import com.olive.pribee.global.error.ErrorCode;
-import com.olive.pribee.global.error.GlobalErrorCode;
-import com.olive.pribee.global.error.exception.AppException;
 import java.util.Objects;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -13,6 +9,13 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.olive.pribee.global.common.ResponseDto;
+import com.olive.pribee.global.error.ErrorCode;
+import com.olive.pribee.global.error.GlobalErrorCode;
+import com.olive.pribee.global.error.exception.AppException;
+
+import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
 @Slf4j

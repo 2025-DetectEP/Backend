@@ -1,6 +1,7 @@
 package com.olive.pribee.global.error.exception;
 
 import com.olive.pribee.global.error.ErrorCode;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

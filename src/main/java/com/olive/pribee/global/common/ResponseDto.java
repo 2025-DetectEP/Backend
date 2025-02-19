@@ -1,9 +1,11 @@
 package com.olive.pribee.global.common;
 
+import org.springframework.http.HttpStatus;
+
 import com.olive.pribee.global.error.ErrorCode;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 @RequiredArgsConstructor
 @Getter
