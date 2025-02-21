@@ -1,4 +1,4 @@
-name: 🚀 Deploy Spring Boot to AWS EC2
+name: Java CD with Gradle
 
 on:
   push:
