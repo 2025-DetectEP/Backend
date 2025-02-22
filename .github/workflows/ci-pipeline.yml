@@ -36,6 +36,12 @@ jobs:
           echo "${{ secrets.PROPERTIES }}" > ./application.yml
         shell: bash
 
+      - name: 📝 Checkstyle 규칙 파일 생성
+        run: |
+          mkdir -p ./config/checkstyle
+          echo "${{ secrets.NAVER_CHECKSTYLE_RULES }}" > ./config/checkstyle/naver-checkstyle-rules.xml
+        shell: bash
+        
       - name: 🚀 Redis 실행
         uses: supercharge/redis-github-action@1.1.0
         with:
@@ -46,6 +52,9 @@ jobs:
 
       - name: 🛠️ 테스트 프로파일 설정
         run: echo "SPRING_PROFILES_ACTIVE=test" >> $GITHUB_ENV
+
+      - name: 🔍 Checkstyle 파일 확인
+        run: ls -al ./config/checkstyle/
 
       - name: 🏗️ 프로젝트 빌드
         run: ./gradlew clean build
