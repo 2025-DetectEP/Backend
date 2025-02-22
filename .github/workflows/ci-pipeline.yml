@@ -36,12 +36,6 @@ jobs:
           echo "${{ secrets.PROPERTIES }}" > ./application.yml
         shell: bash
 
-      - name: 📝 Checkstyle 규칙 파일 생성
-        run: |
-          mkdir -p ./config/checkstyle
-          echo "${{ secrets.NAVER_CHECKSTYLE_RULES }}" > ./config/checkstyle/naver-checkstyle-rules.xml
-        shell: bash
-        
       - name: 🚀 Redis 실행
         uses: supercharge/redis-github-action@1.1.0
         with:
