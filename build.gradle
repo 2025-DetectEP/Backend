@@ -57,7 +57,7 @@ dependencies {
 
 checkstyle {
     toolVersion = '8.45'
-    configFile = file("${rootDir}/checkstyle/naver-checkstyle-rules.xml")
+    configFile = file("/checkstyle/naver-checkstyle-rules.xml")
 }
 
 jacoco {
