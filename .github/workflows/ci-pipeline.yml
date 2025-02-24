@@ -43,9 +43,6 @@ jobs:
 
       - name: 🔧 빌드 권한 부여
         run: chmod +x gradlew
-        
-      - name: 📂 Checkstyle 파일 존재 확인
-        run: ls -al ${{ github.workspace }}/checkstyle
 
       - name: 🛠️ 테스트 프로파일 설정
         run: echo "SPRING_PROFILES_ACTIVE=test" >> $GITHUB_ENV
