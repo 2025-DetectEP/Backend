@@ -43,11 +43,9 @@ jobs:
 
       - name: 🔧 빌드 권한 부여
         run: chmod +x gradlew
-
-      - name: 📥 Checkstyle 규칙 파일 다운로드
-        run: |
-          mkdir -p config/checkstyle/
-          wget -O config/checkstyle/naver-checkstyle-rules.xml https://raw.githubusercontent.com/naver/hackday-conventions-java/refs/heads/master/rule-config/naver-checkstyle-rules.xml
+        
+      - name: 📂 Checkstyle 파일 존재 확인
+        run: ls -al ${{ github.workspace }}/checkstyle
 
       - name: 🛠️ 테스트 프로파일 설정
         run: echo "SPRING_PROFILES_ACTIVE=test" >> $GITHUB_ENV
