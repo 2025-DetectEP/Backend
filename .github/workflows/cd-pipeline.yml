@@ -1,0 +1,69 @@
+name: Java CD with Gradle
+
+on:
+  push:
+    branches:
+      - main
+      - KAN-8/chore/cicd-setting
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔄 체크아웃 코드
+        uses: actions/checkout@v4
+
+      - name: ☕ JDK 17 설치
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'corretto'
+
+      - name: 📝 application.yml 생성
+        run: |
+          cd ./src/main/resources
+          touch ./application.yml
+          echo "${{ secrets.PROPERTIES }}" > ./application.yml
+        shell: bash
+
+      - name: 🔧 빌드 권한 부여
+        run: chmod +x gradlew
+
+      - name: 🏗️ 프로젝트 jar 파일 제작
+        run: |
+          chmod +x gradlew
+          ./gradlew bootJar
+
+      - name: 🐳 Docker 로그인
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: 🏗️ Docker 이미지 빌드 및 푸시
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+
+      - name: 🚀 EC2에 프로젝트 전송 및 배포
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: |
+            # 기존 컨테이너 중지 및 삭제
+            sudo docker-compose down
+            
+            # 최신 Docker 이미지 다운로드
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+            
+            # 최신 컨테이너 실행
+            sudo docker-compose up -d --force-recreate --no-deps
+            
+            # 실행된 컨테이너 확인
+            sudo docker ps
+            
+            # 불필요한 Docker 이미지 정리
+            sudo docker image prune -f
