@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -54,6 +55,16 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	public ResponseEntity<ResponseDto> exceptionHandler(HttpRequestMethodNotSupportedException e) {
 		ErrorCode errorCode = GlobalErrorCode.METHOD_NOT_ALLOWED;
+		int code = errorCode.getHttpStatus().value();
+		String message = errorCode.getMessage();
+
+		return ResponseEntity.status(code).body(ResponseDto.of(code, message));
+	}
+
+	// RequiredHeaderIsNotExist
+	@ExceptionHandler(MissingRequestHeaderException.class)
+	public ResponseEntity<ResponseDto> handleMissingRequestHeaderException(MissingRequestHeaderException e) {
+		ErrorCode errorCode = GlobalErrorCode.MISSING_HEADER;
 		int code = errorCode.getHttpStatus().value();
 		String message = errorCode.getMessage();
 
