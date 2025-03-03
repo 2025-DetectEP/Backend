@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - KAN-8/chore/cicd-setting
 
 permissions:
   contents: read
