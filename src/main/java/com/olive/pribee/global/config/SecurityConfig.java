@@ -26,6 +26,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+	@Value("${front.url}")
+	private String FRONT_URL;
+
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 	private final CustomOAuth2UserService customOAuth2UserService;
 	private final OAuth2AuthenticationSuccessHandler successHandler;
@@ -62,6 +65,7 @@ public class SecurityConfig {
 	public CorsConfigurationSource corsConfigurationSource() {
 		// 허용할 출처, HTTP 메서드, 헤더 설정 및 자격 증명 포함 설정
 		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(List.of(FRONT_URL));
 		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
 		configuration.setAllowCredentials(true);
@@ -70,6 +74,10 @@ public class SecurityConfig {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/api/**", configuration);
 		source.registerCorsConfiguration("/swagger-ui/**", configuration);
+		source.registerCorsConfiguration("/v3/api-docs/**", configuration);
+		source.registerCorsConfiguration("/webjars/**", configuration);
+		source.registerCorsConfiguration("/swagger-ui.html", configuration);
+
 		return source;
 	}
 }
