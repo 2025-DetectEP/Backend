@@ -74,6 +74,7 @@ public class SecurityConfig {
 		// 특정 API 경로에 대해 CORS 정책을 적용
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/api/**", configuration);
+		source.registerCorsConfiguration("/oauth2/**", configuration);
 		source.registerCorsConfiguration("/swagger-ui/**", configuration);
 		source.registerCorsConfiguration("/v3/api-docs/**", configuration);
 		source.registerCorsConfiguration("/webjars/**", configuration);
