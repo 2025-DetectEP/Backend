@@ -1,6 +1,7 @@
 package com.olive.pribee.module.auth.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -53,6 +54,10 @@ public class FacebookAuthService {
 					)
 			)
 			.onErrorResume(Exception.class, ex -> {
+				if (ex instanceof AppException) {
+					return Mono.error(ex);
+				}
+
 				log.error("[Facebook] Facebook ID & Long Term Token 가져오기 실패: {}", ex.getMessage(), ex);
 				return Mono.error(new AppException(GlobalErrorCode.INTERNAL_SERVER_ERROR));
 			});
@@ -69,9 +74,18 @@ public class FacebookAuthService {
 				.queryParam("code", code)
 				.build())
 			.retrieve()
+			.onStatus(status ->
+				status == HttpStatus.UNAUTHORIZED || status == HttpStatus.BAD_REQUEST, response ->{
+				log.error("[Facebook] Invalid Facebook Code: {}", code);
+				return Mono.error(new AppException(GlobalErrorCode.INVALID_FACEBOOK_CODE));
+			})
 			.bodyToMono(FacebookTokenRes.class)
 			.map(FacebookTokenRes::getAccessToken) // Access Token 추출
 			.onErrorResume(Exception.class, ex -> {
+				if (ex instanceof AppException) {
+					return Mono.error(ex);
+				}
+
 				log.error("[Facebook] AccessToken 요청 실패: {}", ex.getMessage(), ex);
 				return Mono.error(new AppException(GlobalErrorCode.INTERNAL_SERVER_ERROR));
 			});
