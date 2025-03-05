@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		// accessToken 이 필요없는 경우 필터링 없이 처리
 		if (requestURI.startsWith("/api/auth/token") ||
-			requestURI.startsWith("/oauth2")) { // oauth2/authorization/facebook
+			requestURI.startsWith("/api/auth/login/facebook")) {
 			chain.doFilter(request, response);
 			return;
 		}
