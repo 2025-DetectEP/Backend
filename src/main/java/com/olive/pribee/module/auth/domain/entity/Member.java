@@ -41,7 +41,6 @@ public class Member extends BaseTime {
 	@NotNull
 	private String name;
 
-	@NotNull
 	private String email;
 
 	@NotNull
@@ -51,7 +50,7 @@ public class Member extends BaseTime {
 	@Enumerated(EnumType.STRING)
 	private MemberRole role;
 
-	public static Member of(@NotNull String facebookId,@NotNull String name, @NotNull String email, @NotNull String profilePictureUrl) {
+	public static Member of(@NotNull String facebookId,@NotNull String name, String email, @NotNull String profilePictureUrl) {
 		return Member.builder()
 			.facebookId(facebookId)
 			.name(name)

@@ -24,9 +24,15 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController implements MemberControllerDocs {
 	private final MemberService memberService;
 
+	@GetMapping("/login/facebook")
+	public ResponseEntity<ResponseDto> getLogin(@RequestHeader("facebook-code") String code){
+		LoginResDto resDto = memberService.getAccessToken(code);
+		return ResponseEntity.status(201).body(DataResponseDto.of(resDto, 201));
+	}
+
 	@GetMapping("/token")
 	public ResponseEntity<ResponseDto> getAccessToken(@RequestHeader("Authorization-Refresh") String refreshToken) {
-		LoginResDto resDto = memberService.getAccessToken(refreshToken);
+		LoginResDto resDto = memberService.getNewAccessToken(refreshToken);
 		return ResponseEntity.status(201).body(DataResponseDto.of(resDto, 201));
 	}
 
