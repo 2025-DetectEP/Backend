@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.olive.pribee.global.common.DataResponseDto;
 import com.olive.pribee.global.common.ResponseDto;
 import com.olive.pribee.module.auth.domain.entity.Member;
-import com.olive.pribee.module.auth.dto.res.LoginResDto;
+import com.olive.pribee.module.auth.dto.res.LoginRes;
 import com.olive.pribee.module.auth.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,13 +26,13 @@ public class MemberController implements MemberControllerDocs {
 
 	@GetMapping("/login/facebook")
 	public ResponseEntity<ResponseDto> getLogin(@RequestHeader("facebook-code") String code){
-		LoginResDto resDto = memberService.getAccessToken(code);
+		LoginRes resDto = memberService.getAccessToken(code);
 		return ResponseEntity.status(201).body(DataResponseDto.of(resDto, 201));
 	}
 
 	@GetMapping("/token")
 	public ResponseEntity<ResponseDto> getAccessToken(@RequestHeader("Authorization-Refresh") String refreshToken) {
-		LoginResDto resDto = memberService.getNewAccessToken(refreshToken);
+		LoginRes resDto = memberService.getNewAccessToken(refreshToken);
 		return ResponseEntity.status(201).body(DataResponseDto.of(resDto, 201));
 	}
 

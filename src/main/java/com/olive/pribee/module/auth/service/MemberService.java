@@ -13,7 +13,7 @@ import com.olive.pribee.module.auth.domain.entity.Member;
 import com.olive.pribee.module.auth.domain.repository.MemberRepository;
 import com.olive.pribee.module.auth.dto.res.FacebookAuthRes;
 import com.olive.pribee.module.auth.dto.res.FacebookUserInfoRes;
-import com.olive.pribee.module.auth.dto.res.LoginResDto;
+import com.olive.pribee.module.auth.dto.res.LoginRes;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -32,7 +32,7 @@ public class MemberService {
 
 	// facebook code 기반 facebook 로그인을 통한 접근 jwt 발급
 	@Transactional
-	public LoginResDto getAccessToken(String code) {
+	public LoginRes getAccessToken(String code) {
 		// code 기반 facebook ID 조회
 		FacebookAuthRes facebookAuthRes = facebookAuthService.getFacebookIdWithToken(code).block();
 		if (facebookAuthRes == null) {
@@ -68,12 +68,12 @@ public class MemberService {
 		redisUtil.setOpsForValue(member.getId() + "_refresh", jwtVo.getRefreshToken(),
 			jwtTokenProvider.getREFRESH_TOKEN_EXPIRATION());
 
-		return LoginResDto.of(jwtVo.getAccessToken(), jwtVo.getRefreshToken());
+		return LoginRes.of(jwtVo.getAccessToken(), jwtVo.getRefreshToken());
 	}
 
 	// refresh token 으로 새로운 accessToken 발급
 	@Transactional
-	public LoginResDto getNewAccessToken(String refreshToken) {
+	public LoginRes getNewAccessToken(String refreshToken) {
 		if (refreshToken.isBlank()) {
 			throw new AppException(GlobalErrorCode.REFRESH_TOKEN_REQUIRED);
 		}
@@ -94,21 +94,25 @@ public class MemberService {
 		redisUtil.setOpsForValue(tokenMember.getId() + "_refresh", jwtVo.getRefreshToken(),
 			jwtTokenProvider.getREFRESH_TOKEN_EXPIRATION());
 
-		return LoginResDto.of(jwtVo.getAccessToken(), jwtVo.getRefreshToken());
+		return LoginRes.of(jwtVo.getAccessToken(), jwtVo.getRefreshToken());
 	}
 
 	// 로그아웃
 	@Transactional
 	public void deleteRefreshToken(Member member) {
-		// 사용자 refreshToken 삭제
-		redisUtil.delete(member.getId() + "_refresh");
+		deleteMemberRedis(member);
 	}
 
 	// 탈퇴
 	@Transactional
 	public void deleteMember(Member member) {
 		// 사용자 정보 삭제
+		deleteMemberRedis(member);
 		memberRepository.delete(member);
 	}
 
+	private void deleteMemberRedis(Member member){
+		redisUtil.delete(member.getId() + "_fb_access");
+		redisUtil.delete(member.getId() + "_refresh");
+	}
 }

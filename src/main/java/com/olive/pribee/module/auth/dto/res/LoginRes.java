@@ -7,15 +7,15 @@ import lombok.Getter;
 
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
-public class LoginResDto {
+public class LoginRes {
 	@Schema(description = "accessToken", example = "eyJ0eXAiOiJKV1QiLCJhbGc...")
 	private final String accessToken;
 
 	@Schema(description = "refreshToken", example = "eyJ0eXAiOiJKV1QiLCJhbGc...")
 	private final String refreshToken;
 
-	public static LoginResDto of(String accessToken, String refreshToken) {
-		return LoginResDto.builder()
+	public static LoginRes of(String accessToken, String refreshToken) {
+		return LoginRes.builder()
 			.accessToken(accessToken)
 			.refreshToken(refreshToken)
 			.build();
