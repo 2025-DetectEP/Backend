@@ -14,7 +14,7 @@ import io.swagger.v3.oas.models.servers.Server;
 public class OpenApiConfig {
 
 	private static final String BEARER_TOKEN_PREFIX = "bearer";
-	private static String securityJwtName = "JWT";
+	private static final String securityJwtName = "JWT";
 
 	@Bean
 	public OpenAPI customOpenAPI() {
