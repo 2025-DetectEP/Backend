@@ -45,6 +45,7 @@ public class SecurityConfig {
 				.requestMatchers(
 					"/api/auth/token",
 					"/api/auth/login/facebook",
+					"/api/quiz/**",
 					"/swagger-ui/**",
 					"/webjars/**",
 					"/swagger-ui.html",
