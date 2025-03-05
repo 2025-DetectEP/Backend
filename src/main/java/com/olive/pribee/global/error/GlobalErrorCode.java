@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 public enum GlobalErrorCode implements ErrorCode {
+	INVALID_FACEBOOK_CODE(HttpStatus.UNAUTHORIZED, "facebook code가 유효하지 않습니다."),
 	AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "인증에 실패하였습니다."),
 	AUTHORIZATION_FAILED(HttpStatus.UNAUTHORIZED, "인가에 실패하였습니다."),
 	ACCESS_TOKEN_REQUIRED(HttpStatus.UNAUTHORIZED, "Access Token이 필요합니다."),
