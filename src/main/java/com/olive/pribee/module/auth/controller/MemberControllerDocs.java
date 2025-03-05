@@ -16,7 +16,29 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Member", description = "사용자 관련 API")
 public interface MemberControllerDocs {
 
-	@Operation(summary = "accessToken 발급", description = "리프레시 토큰을 이용해 엑세스 토큰을 발급합니다.")
+	@Operation(summary = "로그인", description = "facebook code 를 통해 로그인을 발급합니다.")
+	@ApiResponses({
+		@ApiResponse(responseCode = "201", description = "Created",
+			content = @Content(
+				mediaType = "application/json",
+				schema = @Schema(implementation = ResponseDto.class),
+				examples =
+				@ExampleObject(value = "{ \"code\": 201, \"message\": \"Created\" }")
+			)
+		),
+		@ApiResponse(responseCode = "401", description = "인증에 실패하였습니다.",
+			content = @Content(
+				mediaType = "application/json",
+				schema = @Schema(implementation = ResponseDto.class),
+				examples =
+				@ExampleObject(value = "{ \"code\": 401, \"message\": \"facebook code가 유효하지 않습니다.\" }")
+
+			)
+		)
+	})
+	ResponseEntity<ResponseDto> getLogin(String code);
+
+	@Operation(summary = "accessToken 재발급", description = "리프레시 토큰을 이용해 엑세스 토큰을 발급합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "201", description = "Created",
 			content = @Content(
