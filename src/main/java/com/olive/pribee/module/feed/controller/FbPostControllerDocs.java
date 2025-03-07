@@ -1,7 +1,10 @@
 package com.olive.pribee.module.feed.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.mongodb.lang.Nullable;
 import com.olive.pribee.global.common.ResponseDto;
 import com.olive.pribee.global.enums.DetectKeyword;
 import com.olive.pribee.module.auth.domain.entity.Member;
@@ -30,7 +33,7 @@ public interface FbPostControllerDocs {
 					+ "  \"data\": {\n"
 					+ "    \"createdTime\": \"2025-03-06T14:35:45\",\n"
 					+ "    \"safeMessage\": null,\n"
-					+ "    \"message\": \"2025년 2월 27일 ~ 3월 2일 대만 여행✈\\n\\n오랜만에 해외여행! 겨울이 끝나갈 즈음, 따뜻한 나라로 떠나고 싶어서 친구..."
+					+ "    \"message\": \"2025년 2월 27일 ~ 3월 2일 대만 여행✈\\n\\n오랜만에 해외여행!...\",\n"
 					+ "    \"permalinkUrl\": \"https://www.facebook.com/122100024608769823/posts/122110815812769823\",\n"
 					+ "    \"messageDetectRes\": [\n"
 					+ "      {\n"
@@ -85,7 +88,7 @@ public interface FbPostControllerDocs {
 					+ "    ],\n"
 					+ "    \"photoUrlRes\": [\n"
 					+ "      {\n"
-					+ "        \"pictureUrl\": \"https://scontent-gmp1-1.xx.fbcdn.net/v/t39.30808-6/481898235_122110815350769823_7830570790572853712_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=103&ccb=1-7&_nc_sid=127cfc&_nc_ohc=pqTxmMiaRmAQ7kNvgF_M2fo&_nc_oc=AdinZRm68WKJbnn4k8rmen-R1dYh-fVdY5Ln9wy9FUZzoYlqG6p3dTwjVynw9mzo0uM&_nc_zt=23&_nc_ht=scontent-gmp1-1.xx&edm=AP4hL3IEAAAA&_nc_gid=APgMhPiomivhYaHlQ0N7ogZ&oh=00_AYEzEWPriAvCi_kxV_i4eY7DSTzniaPtlf7qcPcVrlettQ&oe=67D07B53\",\n"
+					+ "        \"pictureUrl\": \"https://scontent-gmp1-1.xx.fbcdn.net/v/t39.30808-6/481898235_122110815350769823_7830570790572853712_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=103&ccb=1-7&_nc_sid=127cfc&_nc_ohc=pqTxmMiaRmAQ7kNvgF_M2fo&_nc_oc=AdinZRm68WKJbnn4k8rmen-R1dYh-fVdY5Ln9wy9FUZzoYlqG6p3dTwjVynw9mzo0uM&_nc_zt=23&_nc_ht=scontent-gmp1-1.xx&edm=AP4hL3IEAAAA&_nc_gid=AivqHWL5xXiL5ZL42RVLVvt&oh=00_AYHT_TOYFwZUH_PdXyW6xy-V95142_T7cNqnXT4lG0G8cA&oe=67D0B393\",\n"
 					+ "        \"photoDetectRes\": [\n"
 					+ "          {\n"
 					+ "            \"detectWord\": \"TAIPEI\",\n"
@@ -93,8 +96,8 @@ public interface FbPostControllerDocs {
 					+ "            \"likelihood\": \"LIKELY\",\n"
 					+ "            \"boundingBoxRes\": [\n"
 					+ "              {\n"
-					+ "                \"x\": 0,\n"
-					+ "                \"y\": 0,\n"
+					+ "                \"x\": 338,\n"
+					+ "                \"y\": 513,\n"
 					+ "                \"width\": 69,\n"
 					+ "                \"height\": 130\n"
 					+ "              }\n"
@@ -106,8 +109,8 @@ public interface FbPostControllerDocs {
 					+ "            \"likelihood\": \"LIKELY\",\n"
 					+ "            \"boundingBoxRes\": [\n"
 					+ "              {\n"
-					+ "                \"x\": 0,\n"
-					+ "                \"y\": 0,\n"
+					+ "                \"x\": 356,\n"
+					+ "                \"y\": 416,\n"
 					+ "                \"width\": 74,\n"
 					+ "                \"height\": 142\n"
 					+ "              }\n"
@@ -119,8 +122,8 @@ public interface FbPostControllerDocs {
 					+ "            \"likelihood\": \"LIKELY\",\n"
 					+ "            \"boundingBoxRes\": [\n"
 					+ "              {\n"
-					+ "                \"x\": 0,\n"
-					+ "                \"y\": 0,\n"
+					+ "                \"x\": 317,\n"
+					+ "                \"y\": 517,\n"
 					+ "                \"width\": 61,\n"
 					+ "                \"height\": 112\n"
 					+ "              }\n"
@@ -129,19 +132,19 @@ public interface FbPostControllerDocs {
 					+ "        ]\n"
 					+ "      },\n"
 					+ "      {\n"
-					+ "        \"pictureUrl\": \"https://scontent-gmp1-1.xx.fbcdn.net/v/t39.30808-6/481660333_122110815518769823_8695251980723261352_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=107&ccb=1-7&_nc_sid=127cfc&_nc_ohc=tNw5uyzpP4gQ7kNvgFaUSzy&_nc_oc=AdgNS_NCXQvdYi0SgeISTbhNFApOfOkD1Sl_JdC6fvn7fpMSPJBJkz6ouL23GQCQfuI&_nc_zt=23&_nc_ht=scontent-gmp1-1.xx&edm=AP4hL3IEAAAA&_nc_gid=APgMhPiomivhYaHlQ0N7ogZ&oh=00_AYFp1fMpIXr7D6TfKutspe9qE-b1q_3xwJ0RWlOOerkOvA&oe=67D06CCD\",\n"
+					+ "        \"pictureUrl\": \"https://scontent-gmp1-1.xx.fbcdn.net/v/t39.30808-6/481660333_122110815518769823_8695251980723261352_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=107&ccb=1-7&_nc_sid=127cfc&_nc_ohc=tNw5uyzpP4gQ7kNvgFaUSzy&_nc_oc=AdgNS_NCXQvdYi0SgeISTbhNFApOfOkD1Sl_JdC6fvn7fpMSPJBJkz6ouL23GQCQfuI&_nc_zt=23&_nc_ht=scontent-gmp1-1.xx&edm=AP4hL3IEAAAA&_nc_gid=AivqHWL5xXiL5ZL42RVLVvt&oh=00_AYHqdXOGj9ev1RSy5M6vllYeQeG5LDAV9RDoTG3H9JW6mg&oe=67D0A50D\",\n"
 					+ "        \"photoDetectRes\": []\n"
 					+ "      },\n"
 					+ "      {\n"
-					+ "        \"pictureUrl\": \"https://scontent-gmp1-1.xx.fbcdn.net/v/t39.30808-6/482017104_122110815512769823_160186683350267742_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=101&ccb=1-7&_nc_sid=127cfc&_nc_ohc=tm6myDkjx3MQ7kNvgF5sYwJ&_nc_oc=AdhOyAWpZwVmm2tD2EEkbkhPotc9zV-WEOKIHDIL0TdDQZynqgcQAd0Rg_9wnqXUa-Y&_nc_zt=23&_nc_ht=scontent-gmp1-1.xx&edm=AP4hL3IEAAAA&_nc_gid=APgMhPiomivhYaHlQ0N7ogZ&oh=00_AYHz8uyuq3j_H8Bpk_L4b2eMtQQF03OajuYazQouyt-SzQ&oe=67D0555D\",\n"
+					+ "        \"pictureUrl\": \"https://scontent-gmp1-1.xx.fbcdn.net/v/t39.30808-6/482017104_122110815512769823_160186683350267742_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=101&ccb=1-7&_nc_sid=127cfc&_nc_ohc=tm6myDkjx3MQ7kNvgF5sYwJ&_nc_oc=AdhOyAWpZwVmm2tD2EEkbkhPotc9zV-WEOKIHDIL0TdDQZynqgcQAd0Rg_9wnqXUa-Y&_nc_zt=23&_nc_ht=scontent-gmp1-1.xx&edm=AP4hL3IEAAAA&_nc_gid=AivqHWL5xXiL5ZL42RVLVvt&oh=00_AYFQg325NGwS_dFQSSFsf9vM2hyYg2p0lyskFRwrzYy53A&oe=67D08D9D\",\n"
 					+ "        \"photoDetectRes\": []\n"
 					+ "      },\n"
 					+ "      {\n"
-					+ "        \"pictureUrl\": \"https://scontent-gmp1-1.xx.fbcdn.net/v/t39.30808-6/481771934_122110815506769823_5550061559215650391_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=107&ccb=1-7&_nc_sid=127cfc&_nc_ohc=OL0Fw7PcimsQ7kNvgHOKkl5&_nc_oc=AdhoVSqUqxSa0f67GtTVnVZAyLWXH4ZZQ0RS5n9rZaSbj1bDkuuA79MDFkGcEQfVW2E&_nc_zt=23&_nc_ht=scontent-gmp1-1.xx&edm=AP4hL3IEAAAA&_nc_gid=APgMhPiomivhYaHlQ0N7ogZ&oh=00_AYFHmdkt3hxwMgV-JVz6U6HFM8g5VICr0lHYYPSipDHZgQ&oe=67D04EA9\",\n"
+					+ "        \"pictureUrl\": \"https://scontent-gmp1-1.xx.fbcdn.net/v/t39.30808-6/481771934_122110815506769823_5550061559215650391_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=107&ccb=1-7&_nc_sid=127cfc&_nc_ohc=OL0Fw7PcimsQ7kNvgHOKkl5&_nc_oc=AdhoVSqUqxSa0f67GtTVnVZAyLWXH4ZZQ0RS5n9rZaSbj1bDkuuA79MDFkGcEQfVW2E&_nc_zt=23&_nc_ht=scontent-gmp1-1.xx&edm=AP4hL3IEAAAA&_nc_gid=AivqHWL5xXiL5ZL42RVLVvt&oh=00_AYFpIZy47V6giC5p30SmlhI-jXt9e-Kklhfez7Ez6gilEg&oe=67D086E9\",\n"
 					+ "        \"photoDetectRes\": []\n"
 					+ "      },\n"
 					+ "      {\n"
-					+ "        \"pictureUrl\": \"https://scontent-gmp1-1.xx.fbcdn.net/v/t39.30808-6/482010082_122110815596769823_3206669003289189272_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=101&ccb=1-7&_nc_sid=127cfc&_nc_ohc=0NL_Dl9eJPIQ7kNvgH_LG7T&_nc_oc=AdiJ1S12kB4r37eXclp5Sn7TsGKWQvkaMhb7Zci2YfSDRtUqFz3qe0A9TmkVCn8OE5g&_nc_zt=23&_nc_ht=scontent-gmp1-1.xx&edm=AP4hL3IEAAAA&_nc_gid=APgMhPiomivhYaHlQ0N7ogZ&oh=00_AYFDtbA0NTz8R74OOg1eBFY5YrdvuMZ_OiT5KI4-xFI39Q&oe=67D048A2\",\n"
+					+ "        \"pictureUrl\": \"https://scontent-gmp1-1.xx.fbcdn.net/v/t39.30808-6/482010082_122110815596769823_3206669003289189272_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=101&ccb=1-7&_nc_sid=127cfc&_nc_ohc=0NL_Dl9eJPIQ7kNvgH_LG7T&_nc_oc=AdiJ1S12kB4r37eXclp5Sn7TsGKWQvkaMhb7Zci2YfSDRtUqFz3qe0A9TmkVCn8OE5g&_nc_zt=23&_nc_ht=scontent-gmp1-1.xx&edm=AP4hL3IEAAAA&_nc_gid=AivqHWL5xXiL5ZL42RVLVvt&oh=00_AYHWl7gwLIBPjBJqEtFZwag0TTRHXMvGmiVxJgNbX8rlnw&oe=67D080E2\",\n"
 					+ "        \"photoDetectRes\": []\n"
 					+ "      }\n"
 					+ "    ]\n"
@@ -216,5 +219,92 @@ public interface FbPostControllerDocs {
 	})
 	ResponseEntity<ResponseDto> getTotalPost(Member member, DetectKeyword detectType, String keyword, int page,
 		int size);
+
+
+
+	@Operation(summary = "게시물 직접 입력 분석 요청", description = "게시물 파일 1개와 message 1개에 대한 분석을 제공합니다.")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "Ok",
+			content = @Content(
+				mediaType = "application/json",
+				schema = @Schema(implementation = ResponseDto.class),
+				examples =
+				@ExampleObject(value = "{\n"
+					+ "    \"code\": 200,\n"
+					+ "    \"message\": \"OK\",\n"
+					+ "    \"data\": {\n"
+					+ "        \"textRes\": [\n"
+					+ "            {\n"
+					+ "                \"quote\": \"010-1234-1234\",\n"
+					+ "                \"infoType\": \"PHONE_NUMBER\",\n"
+					+ "                \"likelihood\": \"VERY_LIKELY\",\n"
+					+ "                \"start\": 0,\n"
+					+ "                \"end\": 13\n"
+					+ "            }\n"
+					+ "        ],\n"
+					+ "        \"imageRes\": [\n"
+					+ "            {\n"
+					+ "                \"quote\": \"MAJALENGKA\",\n"
+					+ "                \"infoType\": \"PERSON_NAME\",\n"
+					+ "                \"likelihood\": \"POSSIBLE\",\n"
+					+ "                \"imageLocation\": [\n"
+					+ "                    [\n"
+					+ "                        {\n"
+					+ "                            \"top\": 99,\n"
+					+ "                            \"left\": 236,\n"
+					+ "                            \"width\": 54,\n"
+					+ "                            \"height\": 8\n"
+					+ "                        }\n"
+					+ "                    ]\n"
+					+ "                ]\n"
+					+ "            },\n"
+					+ "            {\n"
+					+ "                \"quote\": \"MAJALENGKA\",\n"
+					+ "                \"infoType\": \"LOCATION\",\n"
+					+ "                \"likelihood\": \"LIKELY\",\n"
+					+ "                \"imageLocation\": [\n"
+					+ "                    [\n"
+					+ "                        {\n"
+					+ "                            \"top\": 115,\n"
+					+ "                            \"left\": 411,\n"
+					+ "                            \"width\": 55,\n"
+					+ "                            \"height\": 8\n"
+					+ "                        }\n"
+					+ "                    ]\n"
+					+ "                ]\n"
+					+ "            },\n"
+					+ "            {\n"
+					+ "                \"quote\": \"BLORA\",\n"
+					+ "                \"infoType\": \"LOCATION\",\n"
+					+ "                \"likelihood\": \"LIKELY\",\n"
+					+ "                \"imageLocation\": [\n"
+					+ "                    [\n"
+					+ "                        {\n"
+					+ "                            \"top\": 131,\n"
+					+ "                            \"left\": 124,\n"
+					+ "                            \"width\": 28,\n"
+					+ "                            \"height\": 9\n"
+					+ "                        }\n"
+					+ "                    ]\n"
+					+ "                ]\n"
+					+ "            }\n"
+					+ "        ]\n"
+					+ "    }\n"
+					+ "}")
+			)
+		),
+		@ApiResponse(responseCode = "400", description = "잘못된 요청입니다.",
+			content = @Content(
+				mediaType = "application/json",
+				schema = @Schema(implementation = ResponseDto.class),
+				examples = @ExampleObject(value = "[" +
+					"{ \"code\": 400, \"message\": \"파일은 필수 값입니다.\" }," +
+					"{ \"code\": 400, \"message\": \"메세지는 필수 값입니다.\" }" +
+					"]"
+				)
+			)
+		),
+	})
+	ResponseEntity<ResponseDto> postDetectPost(MultipartFile file,String message);
 }
 
