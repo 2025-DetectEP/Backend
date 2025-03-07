@@ -31,6 +31,7 @@ import com.olive.pribee.module.feed.domain.repository.DetectKeywordInMessageRepo
 import com.olive.pribee.module.feed.domain.repository.DetectKeywordInPhotoRepository;
 import com.olive.pribee.module.feed.domain.repository.FbPostRepository;
 import com.olive.pribee.module.feed.domain.repository.custom.FbPostRepositoryImpl;
+import com.olive.pribee.module.feed.dto.res.FbPostDetailRes;
 import com.olive.pribee.module.feed.dto.res.FbPostTotalRes;
 
 import lombok.RequiredArgsConstructor;
@@ -228,8 +229,14 @@ public class FbPostService {
 		return fbPost.map(FbPost::getCreatedTime).orElse(null);
 	}
 
+	// 전체 게시물 가져오기
 	public FbPostTotalRes getTotalPost(Long memberId, DetectKeyword detectType, String keyword, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		return fbPostQueryRepository.getFbPostTotal(memberId, detectType, keyword, pageable);
+	}
+
+	// 게시물 상세보기
+	public FbPostDetailRes getDetailPost(Long memberId, Long postId) {
+		return fbPostQueryRepository.getFbPostDetail(memberId, postId);
 	}
 }
