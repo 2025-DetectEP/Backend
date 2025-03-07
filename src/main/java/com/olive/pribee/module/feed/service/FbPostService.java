@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,8 @@ import com.olive.pribee.module.feed.domain.entity.FbPostPictureUrl;
 import com.olive.pribee.module.feed.domain.repository.DetectKeywordInMessageRepository;
 import com.olive.pribee.module.feed.domain.repository.DetectKeywordInPhotoRepository;
 import com.olive.pribee.module.feed.domain.repository.FbPostRepository;
+import com.olive.pribee.module.feed.domain.repository.custom.FbPostRepositoryImpl;
+import com.olive.pribee.module.feed.dto.res.FbPostTotalRes;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +47,7 @@ public class FbPostService {
 	private final GoogleDlpApiService googleDlpApiService;
 
 	private final FbPostRepository fbPostRepository;
+	private final FbPostRepositoryImpl fbPostQueryRepository;
 	private final MemberRepository memberRepository;
 	private final DetectKeywordInMessageRepository detectKeywordInMessageRepository;
 	private final DetectKeywordInPhotoRepository detectKeywordInPhotoRepository;
@@ -223,4 +228,8 @@ public class FbPostService {
 		return fbPost.map(FbPost::getCreatedTime).orElse(null);
 	}
 
+	public FbPostTotalRes getTotalPost(Long memberId, DetectKeyword detectType, String keyword, int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		return fbPostQueryRepository.getFbPostTotal(memberId, detectType, keyword, pageable);
+	}
 }
