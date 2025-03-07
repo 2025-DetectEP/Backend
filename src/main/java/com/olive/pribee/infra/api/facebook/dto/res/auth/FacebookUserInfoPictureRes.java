@@ -1,4 +1,4 @@
-package com.olive.pribee.module.auth.dto.res;
+package com.olive.pribee.infra.api.facebook.dto.res.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
