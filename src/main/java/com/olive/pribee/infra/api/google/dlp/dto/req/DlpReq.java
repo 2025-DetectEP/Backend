@@ -27,9 +27,8 @@ public record DlpReq(
 	}
 
 	public static DlpReq ofImage(String imageUrl) {
-		String base64Image = encodeImageToBase64(imageUrl);
 		return new DlpReq(
-			new Item(Map.of("type", "IMAGE", "data", base64Image)),
+			new Item(Map.of("type", "IMAGE", "data", imageUrl)),
 			new InspectConfig(
 				DetectKeyword.getInfoTypes().stream().map(InfoType::new).toList(),
 				"POSSIBLE"
