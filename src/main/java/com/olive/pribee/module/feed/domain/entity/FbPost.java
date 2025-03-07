@@ -4,10 +4,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.BatchSize;
+
+import com.olive.pribee.global.common.BaseTime;
+import com.olive.pribee.module.auth.domain.entity.Member;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,9 +25,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import com.olive.pribee.global.common.BaseTime;
-import com.olive.pribee.module.auth.domain.entity.Member;
 
 @Getter
 @Entity
@@ -59,15 +60,16 @@ public class FbPost extends BaseTime {
 	@Column(columnDefinition = "TEXT")
 	private String safeMessage;
 
-
 	private Integer dangerScore;
 
-	@OneToMany(mappedBy = "fbPost", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "fbPost", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Builder.Default
+	@BatchSize(size = 100)
 	private List<DetectKeywordInMessage> detectKeywordInMessages = new ArrayList<>();
 
-	@OneToMany(mappedBy = "fbPost", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "fbPost", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Builder.Default
+	@BatchSize(size = 100)
 	private List<FbPostPictureUrl> fbPostPictureUrls = new ArrayList<>();
 
 	public static FbPost of(@NotNull Member member, @NotNull String postId, LocalDateTime createdTime,
@@ -87,7 +89,7 @@ public class FbPost extends BaseTime {
 		this.fbPostPictureUrls.addAll(urls);
 	}
 
-	public void updateDangerScore(Integer dangerScore){
+	public void updateDangerScore(Integer dangerScore) {
 		this.dangerScore = dangerScore;
 	}
 }
