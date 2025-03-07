@@ -1,4 +1,8 @@
-package com.olive.pribee.module.auth.service;
+package com.olive.pribee.infra.api.facebook;
+
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -9,19 +13,22 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.olive.pribee.global.error.GlobalErrorCode;
 import com.olive.pribee.global.error.exception.AppException;
-import com.olive.pribee.module.auth.dto.res.FacebookAuthRes;
-import com.olive.pribee.module.auth.dto.res.FacebookTokenRes;
-import com.olive.pribee.module.auth.dto.res.FacebookUserInfoRes;
+import com.olive.pribee.infra.api.facebook.dto.res.auth.FacebookAuthRes;
+import com.olive.pribee.infra.api.facebook.dto.res.auth.FacebookTokenRes;
+import com.olive.pribee.infra.api.facebook.dto.res.auth.FacebookUserInfoRes;
+import com.olive.pribee.infra.api.facebook.dto.res.post.FacebookPostListRes;
+import com.olive.pribee.infra.api.facebook.dto.res.post.FacebookPostRes;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class FacebookAuthService {
+public class FacebookApiService {
 
 	private final String FB_EXCHANGE_TOKEN = "fb_exchange_token";
 
@@ -75,7 +82,7 @@ public class FacebookAuthService {
 				.build())
 			.retrieve()
 			.onStatus(status ->
-				status == HttpStatus.UNAUTHORIZED || status == HttpStatus.BAD_REQUEST, response ->{
+				status == HttpStatus.UNAUTHORIZED || status == HttpStatus.BAD_REQUEST, response -> {
 				log.error("[Facebook] Invalid Facebook Code: {}", code);
 				return Mono.error(new AppException(GlobalErrorCode.INVALID_FACEBOOK_CODE));
 			})
@@ -127,12 +134,12 @@ public class FacebookAuthService {
 			});
 	}
 
-	// (4-1) Facebook 사용자 정보 조회
+	// (4) Facebook 사용자 정보 조회
 	public Mono<FacebookUserInfoRes> fetchFacebookUserInfo(String accessToken) {
 		return getFacebookWebClient().get()
 			.uri(uriBuilder -> uriBuilder
 				.path("/me")
-				.queryParam("fields", "id,name,email,picture.width(1000).height(1000)")
+				.queryParam("fields", "id,name,email,picture.width(500).height(500){url}")
 				.queryParam("access_token", accessToken)
 				.build())
 			.retrieve()
@@ -142,4 +149,46 @@ public class FacebookAuthService {
 				return Mono.error(new AppException(GlobalErrorCode.INTERNAL_SERVER_ERROR));
 			});
 	}
+
+	// (5) Facebook 게시물 조회
+	public Mono<List<FacebookPostRes>> fetchFacebookUserPosts(String accessToken, LocalDateTime sinceTime) {
+		return getFacebookWebClient().get()
+			.uri(uriBuilder -> uriBuilder
+				.path("/me")
+				.queryParam("fields",
+					"feed.limit(100){id,updated_time,created_time,message,permalink_url,full_picture,place{name},attachments{subattachments{media{image{src}}},type}}")
+				.queryParam("access_token", accessToken)
+				.build())
+			.retrieve()
+			.bodyToMono(FacebookPostListRes.class) // 전체 피드를 받아옴
+			.flatMapMany(feed -> Flux.fromIterable(feed.getPosts().getPosts())) // 리스트로 변환하여 Flux로 반환
+			.filter(facebookPostRes -> isAfterSinceTime(facebookPostRes, sinceTime)) // 시간 필터링
+			.filter(this::isValidAttachment) // 유효한 첨부 필터링
+			.collectList()
+			.onErrorResume(Exception.class, ex -> {
+				log.error("[Facebook] 게시물 조회 실패: {}", ex.getMessage(), ex);
+				return Mono.error(new AppException(GlobalErrorCode.INTERNAL_SERVER_ERROR));
+			});
+	}
+
+	// 지정한 시간 이후의 게시물인지 확인
+	private boolean isAfterSinceTime(FacebookPostRes facebookPostRes, LocalDateTime sinceTime) {
+		if (sinceTime == null) {
+			return true;
+		}
+		LocalDateTime postCreatedTime = facebookPostRes.getCreatedTime().atZone(ZoneOffset.UTC).toLocalDateTime();
+		return postCreatedTime.isAfter(sinceTime);
+	}
+
+	// 유효한 첨부파일인지 확인 (null이거나, album/photo 타입만 허용)
+	private boolean isValidAttachment(FacebookPostRes facebookPostRes) {
+		if (facebookPostRes.getAttachments() == null) {
+			return true;
+		}
+		return facebookPostRes.getAttachments().getData().stream()
+			.findFirst()
+			.map(attachment -> "album".equals(attachment.getType()) || "photo".equals(attachment.getType()))
+			.orElse(false);
+	}
+
 }
