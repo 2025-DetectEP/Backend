@@ -1,5 +1,7 @@
 package com.olive.pribee.module.feed.service;
 
+import static com.olive.pribee.global.util.fileUtil.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +12,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.olive.pribee.global.enums.DetectKeyword;
 import com.olive.pribee.global.enums.DetectLikelihood;
 import com.olive.pribee.global.error.GlobalErrorCode;
@@ -33,6 +37,7 @@ import com.olive.pribee.module.feed.domain.repository.FbPostRepository;
 import com.olive.pribee.module.feed.domain.repository.custom.FbPostRepositoryImpl;
 import com.olive.pribee.module.feed.dto.res.FbPostDetailRes;
 import com.olive.pribee.module.feed.dto.res.FbPostTotalRes;
+import com.olive.pribee.module.feed.error.FbPostErrorCode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -140,7 +145,7 @@ public class FbPostService {
 				.then(),
 
 			Flux.fromIterable(post.getFbPostPictureUrls())
-				.flatMap(url -> googleDlpApiService.analyzeImage(url.getPhotoUrl())
+				.flatMap(url -> googleDlpApiService.analyzeImage(encodeImageToBase64(url.getPhotoUrl()))
 					.filter(findings -> !findings.isEmpty())
 					.flatMap(findings -> saveDetectKeywordsInPhoto(url, findings))
 					.doOnNext(findings -> log.info("Image Findings for {}: {}", url, findings)))
@@ -238,5 +243,15 @@ public class FbPostService {
 	// 게시물 상세보기
 	public FbPostDetailRes getDetailPost(Long memberId, Long postId) {
 		return fbPostQueryRepository.getFbPostDetail(memberId, postId);
+	}
+
+	// 게시물 입력으로 탐지하기
+	public ObjectNode postDetectPost(MultipartFile file, String message) {
+		if (file.isEmpty()) {
+			throw new AppException(FbPostErrorCode.FILE_CANNOT_BE_EMPTY);
+		} else if (message.isBlank()) {
+			throw new AppException(FbPostErrorCode.MESSAGE_CANNOT_BE_EMPTY);
+		}
+		return googleDlpApiService.analyzeRawData(message, file).block();
 	}
 }
