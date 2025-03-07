@@ -19,7 +19,6 @@ import com.olive.pribee.global.enums.DetectKeyword;
 import com.olive.pribee.global.enums.DetectLikelihood;
 import com.olive.pribee.global.error.GlobalErrorCode;
 import com.olive.pribee.global.error.exception.AppException;
-import com.olive.pribee.infra.api.chatgpt.ChatGptApiService;
 import com.olive.pribee.infra.api.facebook.FacebookApiService;
 import com.olive.pribee.infra.api.facebook.dto.res.post.FacebookPostAttachmentDataRes;
 import com.olive.pribee.infra.api.facebook.dto.res.post.FacebookPostRes;
@@ -52,7 +51,6 @@ import reactor.core.publisher.Mono;
 public class FbPostService {
 	private final FacebookApiService facebookApiService;
 	private final GoogleDlpApiService googleDlpApiService;
-	private final ChatGptApiService chatGptApiService;
 
 	private final FbPostRepository fbPostRepository;
 	private final FbPostRepositoryImpl fbPostQueryRepository;
