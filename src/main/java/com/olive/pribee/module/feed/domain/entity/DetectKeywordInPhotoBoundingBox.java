@@ -32,10 +32,10 @@ public class DetectKeywordInPhotoBoundingBox extends BaseTime {
 	private DetectKeywordInPhoto detectKeywordInPhoto;
 
 	@NotNull
-	private int y_position;
+	private int y;
 
 	@NotNull
-	private int x_position;
+	private int x;
 
 	@NotNull
 	private int width;
@@ -43,12 +43,12 @@ public class DetectKeywordInPhotoBoundingBox extends BaseTime {
 	@NotNull
 	private int height;
 
-	public static DetectKeywordInPhotoBoundingBox of(@NotNull DetectKeywordInPhoto detectKeywordInPhoto, int y_position,
-		int x_position, int width, int height) {
+	public static DetectKeywordInPhotoBoundingBox of(@NotNull DetectKeywordInPhoto detectKeywordInPhoto, int y,
+		int x, int width, int height) {
 		return DetectKeywordInPhotoBoundingBox.builder()
 			.detectKeywordInPhoto(detectKeywordInPhoto)
-			.y_position(y_position)
-			.x_position(x_position)
+			.y(y)
+			.x(x)
 			.width(width)
 			.height(height)
 			.build();
