@@ -1,6 +1,10 @@
 package com.olive.pribee.module.feed.dto.res;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
+
+import com.olive.pribee.global.common.DataPageMappingDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -22,7 +26,7 @@ public class FbPostTotalRes {
 	private Double averageDangerScore;
 
 	@Schema(description = "게시물 정보")
-	private Page<FbPostRes> fbPostResPage;
+	private DataPageMappingDto<List<FbPostRes>> fbPostResPage;
 
 	public static FbPostTotalRes of(
 		long totalPostCount,
@@ -30,11 +34,13 @@ public class FbPostTotalRes {
 		Double averageDangerScore,
 		Page<FbPostRes> fbPostResPage
 	) {
+
 		return FbPostTotalRes.builder()
 			.totalPostCount(totalPostCount)
 			.detectPostCount(detectPostCount)
 			.averageDangerScore(averageDangerScore)
-			.fbPostResPage(fbPostResPage)
+			.fbPostResPage(DataPageMappingDto.of(fbPostResPage.getContent(), fbPostResPage.getTotalElements(),
+				fbPostResPage.getTotalPages(), fbPostResPage.getSize(), fbPostResPage.getNumberOfElements()))
 			.build();
 	}
 }
