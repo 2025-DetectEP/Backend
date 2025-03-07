@@ -46,6 +46,7 @@ public class SecurityConfig {
 					"/api/auth/token",
 					"/api/auth/login/facebook",
 					"/api/quiz/**",
+					"/api/feed/detect",
 					"/swagger-ui/**",
 					"/webjars/**",
 					"/swagger-ui.html",
