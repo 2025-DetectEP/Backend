@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.olive.pribee.global.error.GlobalErrorCode;
 import com.olive.pribee.global.error.exception.AppException;
 import com.olive.pribee.infra.api.facebook.dto.res.auth.FacebookAuthRes;
@@ -44,6 +45,12 @@ public class FacebookApiService {
 	@Value("${facebook.redirect-uri}")
 	private String FACEBOOK_REDIRECT_URI;
 
+	@Value("${facebook.field-profile}")
+	private String FIELD_PROFILE;
+
+	@Value("${facebook.field-post}")
+	private String FIELD_POST;
+
 	private final WebClient.Builder webClientBuilder;
 
 	// Facebook WebClient 생성
@@ -70,7 +77,6 @@ public class FacebookApiService {
 			});
 	}
 
-	// (1) Facebook Authorization Code → Short-Lived Access Token 변환
 	private Mono<String> exchangeCodeForAccessToken(String code) {
 		return getFacebookWebClient().get()
 			.uri(uriBuilder -> uriBuilder
@@ -81,13 +87,23 @@ public class FacebookApiService {
 				.queryParam("code", code)
 				.build())
 			.retrieve()
-			.onStatus(status ->
-				status == HttpStatus.UNAUTHORIZED || status == HttpStatus.BAD_REQUEST, response -> {
-				log.error("[Facebook] Invalid Facebook Code: {}", code);
-				return Mono.error(new AppException(GlobalErrorCode.INVALID_FACEBOOK_CODE));
+			.onStatus(status -> status == HttpStatus.UNAUTHORIZED || status == HttpStatus.BAD_REQUEST,
+				response -> response.bodyToMono(String.class).flatMap(body -> {
+					log.error("[Facebook] Invalid Facebook Code: {}, Response: {}", code, body);
+					return Mono.error(new AppException(GlobalErrorCode.INVALID_FACEBOOK_CODE));
+				})
+			)
+			.bodyToMono(String.class) // 응답 본문을 먼저 문자열로 받음
+			.doOnNext(body -> log.info("[Facebook] AccessToken Response: {}", body)) // 응답 로그 남기기
+			.map(body -> {
+				try {
+					return new ObjectMapper().readValue(body, FacebookTokenRes.class);
+				} catch (Exception e) {
+					log.error("[Facebook] JSON Parsing Error: {}", body, e);
+					throw new AppException(GlobalErrorCode.INTERNAL_SERVER_ERROR);
+				}
 			})
-			.bodyToMono(FacebookTokenRes.class)
-			.map(FacebookTokenRes::getAccessToken) // Access Token 추출
+			.map(FacebookTokenRes::getAccessToken)
 			.onErrorResume(Exception.class, ex -> {
 				if (ex instanceof AppException) {
 					return Mono.error(ex);
@@ -139,7 +155,7 @@ public class FacebookApiService {
 		return getFacebookWebClient().get()
 			.uri(uriBuilder -> uriBuilder
 				.path("/me")
-				.queryParam("fields", "id,name,email,picture.width(500).height(500){url}")
+				.queryParam("fields", FIELD_PROFILE)
 				.queryParam("access_token", accessToken)
 				.build())
 			.retrieve()
@@ -155,8 +171,7 @@ public class FacebookApiService {
 		return getFacebookWebClient().get()
 			.uri(uriBuilder -> uriBuilder
 				.path("/me")
-				.queryParam("fields",
-					"feed.limit(100){id,updated_time,created_time,message,permalink_url,full_picture,place{name},attachments{subattachments{media{image{src}}},type}}")
+				.queryParam("fields", FIELD_POST)
 				.queryParam("access_token", accessToken)
 				.build())
 			.retrieve()
