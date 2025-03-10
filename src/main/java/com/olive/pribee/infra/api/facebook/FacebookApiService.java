@@ -45,12 +45,6 @@ public class FacebookApiService {
 	@Value("${facebook.redirect-uri}")
 	private String FACEBOOK_REDIRECT_URI;
 
-	@Value("${facebook.field-profile}")
-	private String FIELD_PROFILE;
-
-	@Value("${facebook.field-post}")
-	private String FIELD_POST;
-
 	private final WebClient.Builder webClientBuilder;
 
 	// Facebook WebClient 생성
@@ -76,7 +70,6 @@ public class FacebookApiService {
 				return Mono.error(new AppException(GlobalErrorCode.INTERNAL_SERVER_ERROR));
 			});
 	}
-
 	private Mono<String> exchangeCodeForAccessToken(String code) {
 		return getFacebookWebClient().get()
 			.uri(uriBuilder -> uriBuilder
@@ -113,6 +106,7 @@ public class FacebookApiService {
 				return Mono.error(new AppException(GlobalErrorCode.INTERNAL_SERVER_ERROR));
 			});
 	}
+
 
 	// (2) Short-Lived Token → Long-Term Token 변환
 	private Mono<String> exchangeForLongTermAccessToken(String shortLivedToken) {
@@ -155,7 +149,7 @@ public class FacebookApiService {
 		return getFacebookWebClient().get()
 			.uri(uriBuilder -> uriBuilder
 				.path("/me")
-				.queryParam("fields", FIELD_PROFILE)
+				.queryParam("fields", "id,name,email,picture.width(500).height(500)")
 				.queryParam("access_token", accessToken)
 				.build())
 			.retrieve()
@@ -171,7 +165,8 @@ public class FacebookApiService {
 		return getFacebookWebClient().get()
 			.uri(uriBuilder -> uriBuilder
 				.path("/me")
-				.queryParam("fields", FIELD_POST)
+				.queryParam("fields",
+					"feed.limit(100){id,updated_time,created_time,message,permalink_url,full_picture,place{name},attachments{subattachments{media{image{src}}},type}}")
 				.queryParam("access_token", accessToken)
 				.build())
 			.retrieve()
