@@ -2,6 +2,26 @@
 
 ---
 
+### ▶️ 아키택처
+![image](https://github.com/user-attachments/assets/27715788-7e64-480a-aeb2-1751eaeab41d)
+
+---
+
+### ▶️ 프로젝트 주소
+
+https://pribee.store/
+
+![image](https://github.com/user-attachments/assets/569365b8-463d-4dbc-92c7-1145012e4a32)
+
+---
+
+### ▶️ 테스트 계정
+ID `olibees2025@gmail.com`
+
+PW `olibees2525@#`
+
+---
+
 ### ▶️ 기술 스택
 
 - **Java 17**
@@ -43,7 +63,3 @@
   | `chore` | 기타 변경 사항 | `chore: Gradle 의존성 업데이트` |
 
 ---
-
-### ▶️ 아키택처
-![image](https://github.com/user-attachments/assets/27715788-7e64-480a-aeb2-1751eaeab41d)
-
