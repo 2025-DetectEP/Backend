@@ -44,3 +44,6 @@
 
 ---
 
+### ▶️ 아키택처
+![image](https://github.com/user-attachments/assets/27715788-7e64-480a-aeb2-1751eaeab41d)
+
